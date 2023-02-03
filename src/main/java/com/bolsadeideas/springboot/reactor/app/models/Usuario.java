@@ -17,7 +17,6 @@ public class Usuario {
 		this.apellido = apellido;
 	}
 	public Usuario(String nombre, String apellido) {
-		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
 	}

@@ -16,11 +16,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.bolsadeideas.springboot.reactor.app.models.Usuario;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 public class SpringBootReactorApplication implements CommandLineRunner {	
 	
 	private static final Logger log = LoggerFactory.getLogger(SpringBootReactorApplication.class);
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootReactorApplication.class, args);
@@ -28,6 +30,44 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+	
+		ejemploFlatMap();
+	}
+public void ejemploFlatMap() throws Exception {
+		
+		List<String> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 
+		usuariosList.add("martha marallano");
+		usuariosList.add("carlo delgado");
+		usuariosList.add("mila salas");
+		usuariosList.add("joffre hermosilla");
+		usuariosList.add("allison salas");
+		usuariosList.add("bruce lee");
+		usuariosList.add("bruce willis");
+		usuariosList.add("johao delgado");
+		//*fromIterable combierte en un String reactivo
+		 Flux.fromIterable(usuariosList)//*flatmap  combierte  a otro flujo mono o flux 
+		
+	     .map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
+		 
+	     .flatMap(usuario -> {
+			if(usuario.getNombre().equalsIgnoreCase("bruce")) {
+				return Mono.just(usuario); 
+			}
+			else {
+				return Mono.empty();
+			}
+		})
+		
+		.map(usuario -> {
+			String nombre = usuario.getNombre().toLowerCase();
+			usuario.setNombre(nombre);
+			return usuario;
+		})
+		 .subscribe(u ->log.info(u.toString()));
+	}
+
+
+public void ejemploIterable() throws Exception {
 		
 		List<String> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 
 		usuariosList.add("martha marallano");
@@ -67,7 +107,5 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 			
 		});
 	}
-
-
 	
 }

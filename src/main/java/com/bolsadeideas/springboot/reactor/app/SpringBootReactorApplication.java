@@ -1,5 +1,12 @@
 package com.bolsadeideas.springboot.reactor.app;
 
+
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +28,18 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Flux <String> nombres = Flux.just("martha marallano", "carlo delgado", "mila salas", "joffre hermosilla", "allison salas", "bruce lee","bruce willis", "johao delgado");
+		
+		List<String> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 
+		usuariosList.add("martha marallano");
+		usuariosList.add("carlo delgado");
+		usuariosList.add("mila salas");
+		usuariosList.add("joffre hermosilla");
+		usuariosList.add("allison salas");
+		usuariosList.add("bruce lee");
+		usuariosList.add("bruce willis");
+		usuariosList.add("johao delgado");
+		//*fromIterable combierte en un String reactivo
+		Flux <String> nombres = Flux.fromIterable(usuariosList);//*Flux.just("martha marallano", "carlo delgado", "mila salas", "joffre hermosilla", "allison salas", "bruce lee","bruce willis", "johao delgado");*//
 		
 	    Flux <Usuario> usuarios = nombres.map(nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
 		.filter(usuario -> usuario.getNombre().toLowerCase().equalsIgnoreCase("bruce"))
@@ -29,7 +47,7 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 					if(usuario == null) {
 						throw new RuntimeException("nombre no pueden ser vacios");
 			}
-		System.out.println(usuario.getNombre().concat("").concat(usuario.getApellido()));
+		System.out.println(usuario.getNombre().concat(" ").concat(usuario.getApellido()));
 					})
 		.map(usuario -> {
 			String nombre = usuario.getNombre().toLowerCase();

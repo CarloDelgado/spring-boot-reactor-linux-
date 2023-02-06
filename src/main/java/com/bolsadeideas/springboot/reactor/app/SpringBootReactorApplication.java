@@ -31,8 +31,42 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploFlatMap();
+		ejemploToString();
 	}
+	
+public void ejemploToString() throws Exception {
+		
+		List<Usuario> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 
+		usuariosList.add(new Usuario("martha", "marallano"));
+		usuariosList.add(new Usuario("carlo", "delgado"));
+		usuariosList.add(new Usuario("mila", "salas"));
+		usuariosList.add(new Usuario("joffre", "hermosilla"));
+		usuariosList.add(new Usuario("allison", "salas"));
+		usuariosList.add(new Usuario("bruce", "lee"));
+		usuariosList.add(new Usuario("bruce", "willis"));
+		usuariosList.add(new Usuario("johao", "delgado"));
+		//*fromIterable combierte en un String reactivo
+		 Flux.fromIterable(usuariosList)//*flatmap  combierte  a otro flujo mono o flux 
+		
+	     .map(usuario -> usuario.getNombre().toUpperCase().concat(" ").concat(usuario.getApellido().toUpperCase()))
+		 
+	     .flatMap(nombre -> {
+			if(nombre.contains("bruce".toUpperCase())) {
+				return Mono.just(nombre); 
+			}
+			else {
+				return Mono.empty();
+			}
+		})
+		
+		.map(nombre -> {
+			//*String Usuario = nombre.toLowerCase();
+			//*usuario.setNombre(nombre);
+			return nombre.toLowerCase();
+		})
+		 .subscribe(u ->log.info(u.toString()));
+	}
+	
 public void ejemploFlatMap() throws Exception {
 		
 		List<String> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 

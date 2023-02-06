@@ -31,8 +31,30 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploToString();
+		ejemploCollectList();
 	}
+public void ejemploCollectList() throws Exception {
+		
+		List<Usuario> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 
+		usuariosList.add(new Usuario("martha", "marallano"));
+		usuariosList.add(new Usuario("carlo", "delgado"));
+		usuariosList.add(new Usuario("mila", "salas"));
+		usuariosList.add(new Usuario("joffre", "hermosilla"));
+		usuariosList.add(new Usuario("allison", "salas"));
+		usuariosList.add(new Usuario("bruce", "lee"));
+		usuariosList.add(new Usuario("bruce", "willis"));
+		usuariosList.add(new Usuario("johao", "delgado"));
+		//*fromIterable combierte en un String reactivo
+		 Flux.fromIterable(usuariosList)
+		 .collectList() //* listar los datos un una sola linea 
+		 .subscribe( lista -> {
+			 lista.forEach(item -> log.info(item.toString()));
+					 
+		 });
+		 //.subscribe( lista -> log.info(lista.toString()));
+		 //*.subscribe( usuario -> log.info(usuario.toString())); una forma de listar 
+}
+	
 	
 public void ejemploToString() throws Exception {
 		

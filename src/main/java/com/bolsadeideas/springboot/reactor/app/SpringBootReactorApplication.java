@@ -13,7 +13,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.bolsadeideas.springboot.reactor.app.models.Comentarios;
 import com.bolsadeideas.springboot.reactor.app.models.Usuario;
+import com.bolsadeideas.springboot.reactor.app.models.UsuarioComentarios;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,8 +33,27 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploCollectList();
+		ejemploUsuarioComentariosFlatMap();
 	}
+	 // 1 forma 
+	//*public Usuario crearUsuario() {
+	//*	return new Usuario("jhon","doe"); }
+	
+	public void ejemploUsuarioComentariosFlatMap(){
+		Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("jhon","doe"));
+			//*return new Usuario("jhon","doe");  otra forma es solo colocar*//
+		Mono<Comentarios> comentariosUsuarioMono = Mono.fromCallable(()->{
+			Comentarios comentarios = new Comentarios();
+			comentarios.addComentarios("hola carlo que tal!");
+			comentarios.addComentarios("mañana voy a la playa!");
+			comentarios.addComentarios("estoy tomando el curso de spring boot con reactor!");
+			return comentarios;
+		});
+		usuarioMono.flatMap(u -> comentariosUsuarioMono.map(c -> new UsuarioComentarios(u,c)))
+		.subscribe(uc ->log.info(uc.toString()));
+}
+	
+	
 public void ejemploCollectList() throws Exception {
 		
 		List<Usuario> usuariosList = new ArrayList<>();//*queremos crear un flujo apartir de una lista tipo colecction 

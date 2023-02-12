@@ -33,8 +33,45 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploUsuarioComentariosFlatMap();
+		ejemploUsuarioComentariosZipwitfhForma2();
 	}
+	public void ejemploUsuarioComentariosZipwitfhForma2(){
+		Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("jhon","doe"));
+			//*return new Usuario("jhon","doe");  otra forma es solo colocar*//
+		Mono<Comentarios> comentariosUsuarioMono = Mono.fromCallable(()->{
+			Comentarios comentarios = new Comentarios();
+			comentarios.addComentarios("hola carlo que tal!");
+			comentarios.addComentarios("mañana voy a la playa!");
+			comentarios.addComentarios("estoy tomando el curso de spring boot con reactor!");
+			return comentarios;
+		});
+		  Mono<UsuarioComentarios> ususarioConComentarios = usuarioMono
+		.zipWith(comentariosUsuarioMono)
+		.map(tuple ->{
+			Usuario u= tuple.getT1();
+			Comentarios c = tuple.getT2();
+			return new UsuarioComentarios(u,c);
+		});
+		  ususarioConComentarios.subscribe(uc ->log.info(uc.toString()));
+}
+	
+	//*FORMA 1 Zipwitfh DESPLEGANDO Y ELIGIENDO LA OPCION DOS
+	public void ejemploUsuarioComentariosZipwitfh(){
+		Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("jhon","doe"));
+			//*return new Usuario("jhon","doe");  otra forma es solo colocar*//
+		Mono<Comentarios> comentariosUsuarioMono = Mono.fromCallable(()->{
+			Comentarios comentarios = new Comentarios();
+			comentarios.addComentarios("hola carlo que tal!");
+			comentarios.addComentarios("mañana voy a la playa!");
+			comentarios.addComentarios("estoy tomando el curso de spring boot con reactor!");
+			return comentarios;
+		});
+		  Mono<UsuarioComentarios> ususarioConComentarios = usuarioMono
+				  .zipWith(comentariosUsuarioMono,(usuario, comentariosUsuario) -> new UsuarioComentarios(usuario, comentariosUsuario));
+		  ususarioConComentarios.subscribe(uc ->log.info(uc.toString()));
+}
+	
+	
 	 // 1 forma 
 	//*public Usuario crearUsuario() {
 	//*	return new Usuario("jhon","doe"); }

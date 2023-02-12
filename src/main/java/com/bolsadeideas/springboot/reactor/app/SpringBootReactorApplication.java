@@ -4,6 +4,7 @@ package com.bolsadeideas.springboot.reactor.app;
 
 
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,15 +34,25 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploZipwitfhRangos();
+		ejemploInterval();
 	}
+	
+	public void ejemploInterval() {
+		Flux<Integer> rango = Flux.range(1, 12);
+		Flux<Long> retraso = Flux.interval(Duration.ofSeconds(1));
+		rango.zipWith(retraso, (ra, re) -> ra)
+		.doOnNext(i -> log.info(i.toString()))
+		.blockLast();//bloquea los hilos que trabajan en paralelo para que se pueda ejecutar el retraso
+	
+	} 
+	
 	// convinamos varios flujos 
 	public void ejemploZipwitfhRangos(){
 		Flux<Integer> rangos = Flux.range(0, 4);
 		Flux.just(1,2 ,3 ,4)
 		.map(i -> (i*2))
 		.zipWith(rangos,(uno, dos) -> String.format("Primer Flux: %d , Segundo Flux: %d", uno, dos))
-		//*.zipWith(Flux.range(0, 4),(uno, dos) -> String.format("Primer Flux: %d , Segundo Flux: %d", uno, dos))
+		//*.zipWith(Flux.range(0, 4),(uno, dos) -> String.format("Primer Flux: %d , Segundo Flux: %d", uno, dos)) forma distinta para hacerlo 
 		.subscribe(texto -> log.info(texto));
 	}
 	//*FORMA 1 Zipwitfh DESPLEGANDO Y ELIGIENDO LA OPCION UNO

@@ -33,8 +33,18 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploUsuarioComentariosZipwitfhForma2();
+		ejemploZipwitfhRangos();
 	}
+	// convinamos varios flujos 
+	public void ejemploZipwitfhRangos(){
+		Flux<Integer> rangos = Flux.range(0, 4);
+		Flux.just(1,2 ,3 ,4)
+		.map(i -> (i*2))
+		.zipWith(rangos,(uno, dos) -> String.format("Primer Flux: %d , Segundo Flux: %d", uno, dos))
+		//*.zipWith(Flux.range(0, 4),(uno, dos) -> String.format("Primer Flux: %d , Segundo Flux: %d", uno, dos))
+		.subscribe(texto -> log.info(texto));
+	}
+	//*FORMA 1 Zipwitfh DESPLEGANDO Y ELIGIENDO LA OPCION UNO
 	public void ejemploUsuarioComentariosZipwitfhForma2(){
 		Mono<Usuario> usuarioMono = Mono.fromCallable(()-> new Usuario("jhon","doe"));
 			//*return new Usuario("jhon","doe");  otra forma es solo colocar*//

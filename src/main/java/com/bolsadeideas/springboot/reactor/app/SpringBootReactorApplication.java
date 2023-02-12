@@ -34,9 +34,18 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploInterval();
+		ejemploDelayElements();
 	}
 	
+	public void ejemploDelayElements() { //*throws InterruptedException//
+	
+		Flux<Integer> rango = Flux.range(1, 12)
+		.delayElements(Duration.ofSeconds(1))
+		.doOnNext(i -> log.info(i.toString()));
+		 rango.blockLast();
+		//* rango.subscribe();
+		 //*Thread.sleep(12000);	
+	} 
 	public void ejemploInterval() {
 		Flux<Integer> rango = Flux.range(1, 12);
 		Flux<Long> retraso = Flux.interval(Duration.ofSeconds(1));

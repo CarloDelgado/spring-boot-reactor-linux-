@@ -7,6 +7,7 @@ package com.bolsadeideas.springboot.reactor.app;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,16 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 	
 		ejemploDelayElements();
+	}
+	
+	public void ejemplointervaloinfinito() {
+		
+		CountDownLatch lach = new CountDownLatch(1);
+		
+		Flux.interval(Duration.ofSeconds(1))
+		    .map(i ->"hola"+i)
+		    .doOnNext(s -> log.info(s))
+		    .subscribe();
 	}
 	
 	public void ejemploDelayElements() { //*throws InterruptedException//

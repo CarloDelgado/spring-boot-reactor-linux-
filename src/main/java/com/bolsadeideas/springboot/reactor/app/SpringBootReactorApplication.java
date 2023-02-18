@@ -35,17 +35,28 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemploDelayElements();
+		ejemplointervaloinfinito();
 	}
 	
-	public void ejemplointervaloinfinito() {
+	public void ejemplointervaloinfinito() throws InterruptedException {
 		
-		CountDownLatch lach = new CountDownLatch(1);
+		CountDownLatch latch = new CountDownLatch(1);
 		
 		Flux.interval(Duration.ofSeconds(1))
-		    .map(i ->"hola"+i)
-		    .doOnNext(s -> log.info(s))
-		    .subscribe();
+		//*.doOnTerminate(() -> latch.countDown()) primera forma
+		.doOnTerminate(latch::countDown)//*segunda forma la forma estatica
+		.flatMap(i ->{ 
+			if (i >= 10) {
+				return Flux.error(new InterruptedException("solo hasta 10!"));
+			}
+			return Flux.just(i);
+		})	
+		    .map(i ->"hola "+i)
+		    .retry(2)
+		    //* .doOnNext(s -> log.info(s)) para no imprimir dos veces en la consola
+		    .subscribe(s -> log.info(s), e -> log.error(e.getMessage()));
+		
+			latch.await();
 	}
 	
 	public void ejemploDelayElements() { //*throws InterruptedException//

@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -37,12 +36,14 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 	
-		ejemplointervaldesdecreate();
+		ejemploIntervalDesdeCreate();
 	}
-	public void ejemplointervaldesdecreate() {
+	public void ejemploIntervalDesdeCreate() {
 		Flux.create(emitter ->{
 			Timer timer = new Timer();
-			timer.schedule(new TimerTask, 1000, 1000);
+			timer.schedule(TimerTask , 1000, 1000);
+			
+			
 			
 		});
 		

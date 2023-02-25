@@ -1,4 +1,4 @@
-package com.bolsadeideas.springboot.reactor.app;
+package com.bolsadeideas.springboot.reactor.app.models;
 
 
 
@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -15,10 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.bolsadeideas.springboot.reactor.app.models.Comentarios;
-import com.bolsadeideas.springboot.reactor.app.models.Usuario;
-import com.bolsadeideas.springboot.reactor.app.models.UsuarioComentarios;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -41,11 +38,24 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 	public void ejemploIntervalDesdeCreate() {
 		Flux.create(emitter ->{
 			Timer timer = new Timer();
-			timer.schedule(TimerTask , 1000, 1000);
-			
-			
-			
-		});
+			timer.schedule(new TimerTask() {
+				
+				private Integer contador=0; 
+				
+	@Override
+	   		public void run() {
+				emitter.next(++contador);
+				if (contador ==10) {
+					timer.cancel();
+					emitter.complete();
+				};
+	}
+				
+				
+			} , 1000, 1000);
+		})
+		.doOnNext(next -> log.info(next.toString()))
+		.subscribe();
 		
 	}
 	

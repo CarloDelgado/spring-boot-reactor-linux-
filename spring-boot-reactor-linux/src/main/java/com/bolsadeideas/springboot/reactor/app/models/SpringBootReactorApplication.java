@@ -49,12 +49,11 @@ public class SpringBootReactorApplication implements CommandLineRunner {
 					timer.cancel();
 					emitter.complete();
 				};
-	}
-				
+	}		
 				
 			} , 1000, 1000);
 		})
-		.doOnNext(next -> log.info(next.toString()))
+		.doOnNext(next -> log.	info(next.toString()))
 		.subscribe();
 		
 	}
